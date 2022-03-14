@@ -119,9 +119,7 @@ body {
   -webkit-background-size: cover;
   background-size: cover;
 }
-li {
-  list-style: none;
-}
+
 a {
   text-decoration: none;
 }
@@ -155,7 +153,7 @@ header {
 }
 .content__title {
   margin-top: 110px;
-  margin-left: 529px;
+  margin-left: 229px;
   margin-right: 250px;
 }
 .title__logo {
@@ -244,5 +242,4 @@ header {
 .nav:not(:last-child) {
   margin-right: 40px;
 }
-/*------------------------------------dialog-----------------*/
 </style>
