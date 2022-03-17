@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="navbar">
-      <div class="navbar__burger" @click="showBurger"></div>
+      <BurgerIcon  @click="showBurger"/>
       <div>
         <img class="navbar__logo" src="@/components/img/startPage/logo.svg" />
       </div>
@@ -17,7 +17,10 @@
         <div class="tab-column">Проигрыши</div>
       </div>
       <TeamList v-if="!isPostsLoading" :teams="teams"></TeamList>
-      <div v-else>Загрузка</div>
+      <div class="loading" v-else>
+        <div class="loading__style">Загрузка</div>
+        
+        </div>
       <div class="loadmore">
         <MyRouterButton class="loadMore" @click="loadMoreTeams">
           Загрузить еще</MyRouterButton
@@ -44,56 +47,135 @@ import MyRouterButton from "@/components/UI/MyRouterButton.vue";
 import TeamList from "@/components/TeamList.vue";
 import axios from "axios";
 import MyBurger from "@/components/UI/MyBurger.vue";
+import BurgerIcon from "../components/UI/BurgerIcon.vue";
 export default {
   data() {
     return {
       isBurgerVisible: false,
+      arr: [],
+      loadMoreArr: [],
       teams: [],
       posts: [],
       isPostsLoading: false,
     };
   },
   methods: {
+    // Получение данных
     fetchTeams() {
       try {
         this.isPostsLoading = true;
         setTimeout(async () => {
-          this.isPostsLoading = false;
           const response = await axios.get(
             "https://api.opendota.com/api/teams"
           );
           this.posts = response.data;
+        }, 100);
+      } catch (e) {
+        alert("Ошибка");
+      }
+    },
+    // Обработка и вывод данных
+    addTeams() {
+      try {
+        this.isPostsLoading = true;
+        setTimeout(() => {
+          this.isPostsLoading = false;
 
-          for (let i = 0; i < this.posts.length; i++) {
-            if (this.teams.length < 10) {
-              this.teams.push(this.posts[i]);
-              this.posts.shift(this.posts[i]);
+          // Обработка полученных данных ( разделил на 100 массивов по 10 объектов)
+          const count = parseInt(this.posts.length / 10);
+
+          for (let i = 0; i < count; i++) {
+            this.loadMoreArr.push(this.posts.slice(i * 10, i * 10 + 10));
+          }
+          // На случай, если количество объектов превысит 1000 остаток будет заноситься в последний массив
+          if (count * 10 < this.posts.length) {
+            this.loadMoreArr.push(this.posts.slice(count * 10));
+          }
+          // Разделил 100 массивов по одному
+          for (let i = 0; i < this.loadMoreArr.length; i++) {
+            let size = 10;
+
+            for (
+              let i = 0;
+              i < Math.ceil(this.loadMoreArr[i].length / size);
+              i++
+            ) {
+              this.arr = this.loadMoreArr[i].slice(i * size, i * size + size);
             }
           }
-          return this.teams, this.postOne;
+          // Выводим 10 объектов и тут же удаляем их из массива с данными (не из исходного)
+          for (let i = 0; i < this.arr.length; i++) {
+            this.teams.push(this.arr[i]);
+            this.loadMoreArr.shift(this.loadMoreArr[i]);
+          }
+          return this.teams;
         }, 1000);
       } catch (e) {
         alert("Ошибка");
       }
     },
+    // Добавление еще 10 данных
     loadMoreTeams() {
-      for (let i = 0; i < this.posts.length; i++) {
-        this.teams.push(this.posts[i]);
+      //Делим массив из 10 массивов по одному
+      for (let i = 0; i < this.loadMoreArr.length; i++) {
+        let size = 10;
+
+        for (let i = 0; i < Math.ceil(this.loadMoreArr[i].length / size); i++) {
+          this.arr = this.loadMoreArr[i].slice(i * size, i * size + size);
+        }
+      }
+      // Добавляем 10 объектов и стираем их из данных
+      for (let i = 0; i < this.arr.length; i++) {
+        this.teams.push(this.arr[i]);
+        this.loadMoreArr.shift(this.loadMoreArr[i]);
       }
     },
-    showBurger(){
+    // Бургер меню
+    showBurger() {
       this.isBurgerVisible = true;
-    }
+    },
+    // Обновление данных
+    stopTimer() {
+      if (this.interval) {
+        window.clearInterval(this.interval);
+      }
+    },
+    startTimer() {
+      this.stopTimer();
+      this.interval = window.setInterval(() => {
+        this.addTeams();
+        console.log(1);
+      }, 60000);
+    },
   },
   mounted() {
     this.fetchTeams();
+    this.addTeams();
+    this.startTimer();
   },
+
   computed: {},
-  components: { MyRouterButton, TeamList, MyBurger },
+  components: { MyRouterButton, TeamList, MyBurger, BurgerIcon },
 };
 </script>
 
 <style  scoped>
+.loading{
+  position: fixed;
+  top: 0;left:0;right: 0;bottom: 0;
+  background: rgba(0,0,0,0.9);
+}
+.loading__style{
+  text-align: center;
+ font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 58px;
+  margin: auto;
+  padding: 17%;
+  color: #e0d8ff;
+}
 .container {
   margin-left: 22px;
 }
@@ -106,26 +188,6 @@ export default {
   display: flex;
 }
 
-.navbar__burger {
-  position: relative;
-  display: inline-block;
-  margin-top: 5px;
-  width: 20px;
-  height: 1px;
-  padding-top: 3px;
-  border-top: 0.2em solid #fffbfb;
-  border-bottom: 0.2em solid #fffcfc;
-  text-shadow: 0 1px 0 #151414;
-}
-
-.navbar__burger:before {
-  content: "";
-  position: absolute;
-  top: 0.7em;
-  left: 0px;
-  width: 100%;
-  border-top: 0.2em solid #f7efef;
-}
 .navbar__logo {
   width: 190px;
   height: 32px;
@@ -171,7 +233,7 @@ h1 {
   padding-right: 20px;
   color: #ffffff;
 }
-.tab-column:last-child{
+.tab-column:last-child {
   padding-right: 50px;
 }
 .footer {

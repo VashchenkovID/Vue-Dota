@@ -74,8 +74,17 @@ export default {
     lastTimeFor() {
       const date = Date.now(); // время текущее
       let currentDate = this.team.last_match_time; // время из объекта
-      let days = Math.ceil(-(currentDate - date) / 1000 / 60 / 60 / 24 / 365);
-      return `${days} дня назад`;
+      let time = Math.ceil(date - currentDate);
+      let month = new Date(time).getMonth();
+      let days = new Date(time).getDay();
+      if (month == 1) {
+        return ` ${month} месяц назад`;
+      } else {
+        if (month > 1) {
+          return ` ${month} месяца  назад`;
+        }
+      }
+      return `  ${days} дней назад`;
     },
     meterRait() {
       this.valueRaiting = this.team.rating;
@@ -89,7 +98,6 @@ export default {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  
 }
 .team__icon {
   display: flex;
@@ -167,7 +175,6 @@ export default {
 
   color: #e0d8ff;
   margin-left: 145px;
-
 }
 
 meter {

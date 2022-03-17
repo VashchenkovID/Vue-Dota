@@ -3,6 +3,7 @@ import StartPage  from '@/pages/StartPage.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import  TeamsList  from '@/pages/TeamsList.vue';
 import MatchesList  from '@/pages/MatchesList.vue';
+import DetailsMatch from '@/pages/DetailsMatch.vue';
 
 const routes = [
     {
@@ -16,6 +17,10 @@ const routes = [
     {
         path: '/matches',
         component: MatchesList
+    },
+    {
+        path: '/details',
+        component: DetailsMatch
     },
 ]
 
