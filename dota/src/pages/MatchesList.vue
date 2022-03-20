@@ -69,6 +69,7 @@ export default {
             "https://api.opendota.com/api/proMatches"
           );
           this.matches = response.data;
+           console.log(this.matches);
         }, 100);
       } catch (e) {
         alert("Ошибка");
@@ -80,10 +81,8 @@ export default {
         this.isMatchLoading = true;
         setTimeout(() => {
           this.isMatchLoading = false;
-
           // Обработка полученных данных ( разделил на 100 массивов по 10 объектов)
           const count = parseInt(this.matches.length / 10);
-
           for (let i = 0; i < count; i++) {
             this.loadMoreArr.push(this.matches.slice(i * 10, i * 10 + 10));
           }
@@ -94,7 +93,6 @@ export default {
           // Разделил 100 массивов по одному
           for (let i = 0; i < this.loadMoreArr.length; i++) {
             let size = 10;
-
             for (
               let i = 0;
               i < Math.ceil(this.loadMoreArr[i].length / size);
@@ -119,7 +117,6 @@ export default {
       //Делим массив из 10 массивов по одному
       for (let i = 0; i < this.loadMoreArr.length; i++) {
         let size = 10;
-
         for (let i = 0; i < Math.ceil(this.loadMoreArr[i].length / size); i++) {
           this.arr = this.loadMoreArr[i].slice(i * size, i * size + size);
         }
@@ -137,6 +134,7 @@ export default {
   mounted() {
     this.fetchMatches();
     this.addMatches();
+   
   },
 };
 </script>
@@ -157,7 +155,6 @@ export default {
 .navbar {
   display: flex;
 }
-
 .navbar__logo {
   width: 190px;
   height: 32px;
@@ -166,28 +163,22 @@ export default {
 h1 {
   margin-top: 0;
   padding-top: 128px;
-
   font-family: "Inter";
   font-style: normal;
   font-weight: 700;
   font-size: 48px;
   line-height: 58px;
   /* identical to box height */
-
   text-transform: uppercase;
-
   background: linear-gradient(268.55deg, #ebc1ff 0%, #e0d8ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
-
   text-shadow: 0px 8px 16px rgba(16, 0, 37, 0.15);
 }
-
 .footer {
   background: rgba(16, 0, 37);
-
   position: relative;
   bottom: 0;
   left: 0;
@@ -205,7 +196,6 @@ h1 {
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
-
   color: #e0d8ff;
 }
 .nav:not(:last-child) {
