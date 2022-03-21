@@ -70,6 +70,12 @@ export default {
       var seconds = new Date(currentDate).getSeconds();
       return `${minutes}:${seconds}`;
     },
+    destruction() {
+      console.log(this.match);
+    },
+  },
+  mounted() {
+    this.destruction();
   },
 };
 </script>
