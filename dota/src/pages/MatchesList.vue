@@ -75,13 +75,12 @@ export default {
           );
           this.heroItem = request.data;
           const detail = sessionStorage.getItem("detail");
-
+          console.log(this.heroItem);
           if (detail) {
             this.details = JSON.parse(detail);
           }
 
-// Деструктуризация данных
-
+          // Деструктуризация данных
         }, 100);
       } catch (e) {
         alert("Ошибка");
